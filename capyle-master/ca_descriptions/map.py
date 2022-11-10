@@ -1,6 +1,8 @@
 # Name: NAME
 # Dimensions: 2
 
+
+import numpy as np
 import inspect
 # --- Set up executable path, do not edit ---
 import sys
@@ -11,14 +13,11 @@ sys.path.append(main_dir_loc)
 sys.path.append(main_dir_loc + 'capyle')
 sys.path.append(main_dir_loc + 'capyle/ca')
 sys.path.append(main_dir_loc + 'capyle/guicomponents')
-
-
-import numpy as np
-
-import capyle.utils as utils
 from capyle.ca import Grid2D, Neighbourhood, randomise2d
+import capyle.utils as utils
 
 # ---
+
 
 def setup(args):
     """Set up the config object used to interact with the GUI"""
@@ -27,7 +26,7 @@ def setup(args):
     # -- THE CA MUST BE RELOADED IN THE GUI IF ANY OF THE BELOW ARE CHANGED --
     config.title = "MAP"
     config.dimensions = 2
-    config.states = (0,1,2)
+    config.states = (0, 1, 2, 3, 4, 5, 6, 7)
     config.num_generations = 100
     # -------------------------------------------------------------------------
 
@@ -37,14 +36,31 @@ def setup(args):
     # config.grid_dims = (200,200)
 
     # ----------------------------------------------------------------------
-    config.state_colors = [(0.7, 0.7, 0.2), (0.9, 0.9, 0.2), (0.3, 0.4, 0)]
-
+    config.state_colors = [(0.6,0.9,0), (1, 1, 0),(0.3, 0.7, 0), (0.9, 0.6, 0.1), (0.1, 0.5, 0),(0.7, 0, 0),(0.3, 0.3, 0.3), (0.2, 0, 0.5) ]
+    # 1- grass 2- burning grass 3- chaparral 4- burning chaparral 5- forest 6- burning forest 7- ash 8- water  
     config.grid_dims = (200, 200)
     gridray = np.zeros((200, 200))
 
-    for i in range(100, 150):
-        for y in range(100, 150):
-            gridray[i][y] = 1
+    for y in range(0, 200):
+        for x in range(0, 200):
+            gridray[y][x] = 2
+    
+    for y in range(20,70):
+        for x in range(60, 100):
+            gridray[y][x] = 4
+
+    for y in range(70,80):
+        for x in range(20,100):
+            gridray[y][x] = 7
+    
+    for y in range(80,125):
+        for x in range(0,100):
+            gridray[y][x] = 4
+    
+    for y in range(20, 160):
+        for x in range(120, 140):
+            gridray[y][x] = 3
+                    
     config.set_initial_grid(gridray)
     # the GUI calls this to pass the user defined config
     # into the main system with an extra argument
