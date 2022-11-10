@@ -19,28 +19,28 @@ import capyle.utils as utils
 
 def setup(args):
     """Set up the config object used to interact with the GUI"""
-    config_path = args[0]
+    cconfig_path = args[0]
     config = utils.load(config_path)
     # -- THE CA MUST BE RELOADED IN THE GUI IF ANY OF THE BELOW ARE CHANGED --
-    config.title = "Com3524_team"
+    # here by hongyu 1:
+    config.title = "Com3524 The First Simulation !"
+    # here by hongyu 2:
     config.dimensions = 2
-
-    # here by hongyu:
-    config.states = (0, 1)
-    # here by hongyu:
+    # here by hongyu 3:
+    config.states = (0, 1, 2)
+    # here by hongyu 4:
     config.wrap = True
+    # here by hongyu 5:
+    # config.num_generations
+
     # -------------------------------------------------------------------------
 
     # ---- Override the defaults below (these may be changed at anytime) ----
 
-    # config.state_colors = [(0,0,0),(1,1,1)]
-    # config.grid_dims = (200,200)
+    config.state_colors = [(0.7, 0.7, 0.2), (0.9, 0.9, 0.2), (0.3, 0.4, 0)]
 
-    # ----------------------------------------------------------------------
-
-    # the GUI calls this to pass the user defined config
-    # into the main system with an extra argument
-    # do not change
+    config.grid_dims = (200,200)
+    
     if len(args) == 2:
         config.save()
         sys.exit()
