@@ -41,6 +41,14 @@ def setup(args):
 
     config.grid_dims = (200,200)
     
+    # From Fin:
+    gridray = np.zeros((200, 200))
+
+    for i in range(len(gridray)):
+        for y in range(100, 150):
+            gridray[i][y] = 2
+    config.set_initial_grid(gridray)
+    
     if len(args) == 2:
         config.save()
         sys.exit()
