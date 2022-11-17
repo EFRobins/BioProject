@@ -46,6 +46,7 @@ def setup(args):
     config.num_generations = 1000
     # countNum = 0
     config.grid_dims = (200, 200)
+    global gridray
     gridray = np.zeros((200, 200))
     # ----------------------------------------------------------------------
 
@@ -84,9 +85,10 @@ def setup(args):
         for x in range(0, 10):
             gridray[y][x] = 4
 
-    # for y in range(0, 1):
-    #     for x in range(194, 200):
-    #         gridray[y][x] = 4
+    for y in range(0, 1):
+        for x in range(194, 200):
+            gridray[y][x] = 4
+
 
     config.set_initial_grid(gridray)
 
@@ -117,7 +119,7 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
     NW, N, NE, W, E, SW, S, SE = neighbourstates
 
     #array of pixels with a northern pixel that is burning
-    northBurning = (N == 4) | (NW == 4 ) | (NE == 4)
+    northBurning = (N == 4) | (NW == 4 ) | (NE == 4) | (SW == 3) | (SE == 3) | (W == 3) | (E == 3)
     
     #array of all possible burning arrays
     burnableCells =  (grid == 0 ) | (grid == 2 ) | (grid == 3 )
@@ -131,8 +133,7 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
     
     itemindex = np.where(burning == True)
     timeTrack[itemindex] += 1
-    stopBurn = (timeTrack >= 30)
-    print(timeTrack)
+    stopBurn = ((timeTrack >= 100) & (gridray == 2)) | ((timeTrack >= 5) & (gridray == 3)) | ((timeTrack >= 35) & (gridray == 0)) | ((timeTrack >= 35) & (gridray == 4))
 
     grid[toBurn] = 4
     grid[stopBurn] = 5
@@ -146,7 +147,7 @@ def main():
 
     # Run the CA, save grid state every generation to timeline
     timeline = grid.run()
-
+    
     # Save updated config to file
     config.save()
     # Save timeline to file
