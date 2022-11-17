@@ -96,12 +96,14 @@ def setup(args):
 
     return config
 
-
+timeTrack = np.zeros((200,200))
 def transition_function(grid, neighbourstates, neighbourcounts):
     """Function to apply the transition rules
     and return the new grid"""
     # YOUR CODE HERE
 
+    burning = (grid == 4)
+    
     updateBurn(grid, neighbourstates, neighbourcounts)
 
     return grid
@@ -113,7 +115,7 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
 
     # unpack the state arrays
     NW, N, NE, W, E, SW, S, SE = neighbourstates
-    
+
     #array of pixels with a northern pixel that is burning
     northBurning = (N == 4) | (NW == 4 ) | (NE == 4)
     
@@ -123,7 +125,17 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
     
     #set of cells to start burning
     toBurn = burnableCells & burningNeighbours & northBurning
+
+
+    burning = (grid == 4)
+    
+    itemindex = np.where(burning == True)
+    timeTrack[itemindex] += 1
+    stopBurn = (timeTrack >= 30)
+    print(timeTrack)
+
     grid[toBurn] = 4
+    grid[stopBurn] = 5
 
 def main():
     """ Main function that sets up, runs and saves CA"""
