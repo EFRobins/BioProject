@@ -124,40 +124,57 @@ def transition_function(grid, neighbourstates, neighbourcounts):
     return grid
 
 
-# the function of firing chaparall simulation:
-
 def relativeTime_simu(grid, neighbourstates, neighbourcounts):
-
     # ----------------------Simulate the chaparral with wind exist------:
 
     # unpack the state arrays
     NW, N, NE, W, E, SW, S, SE = neighbourstates
-
+    
+    # get the cells that have a north burning neig:
     NorthDirctIsburing = (N == 4)
     chaparrals_isburning = (grid == 4)
     chaparralsAllowedStart_burning = (grid == 0) & (grid != 5)
-    chaparrals_withTwoBurningNei = (neighbourcounts[4] == 2) # can be 1
-    chaparrals_withThreeBurningNei = (neighbourcounts[4] == 3) # can be 2
-    ruleONE_chap = chaparralsAllowedStart_burning & chaparrals_withThreeBurningNei
-    ruleTWO_chap = chaparralsAllowedStart_burning & (chaparrals_withTwoBurningNei
-                                                & NorthDirctIsburing)
+    # the condition of start burning that start burning when have a nei is burning in north:
+    chaparrals_BurningNei_withWind = (neighbourcounts[4] > 1) 
+    # the condition of start burning: 
+    chaparrals_BurningNei = (neighbourcounts[4] > 2)  
 
-    chaparrals_startBurning = (ruleTWO_chap | ruleONE_chap)& \
-                               ((SE == 0) | (S == 0) | (SW == 0))
+    ruleONE_chap = chaparralsAllowedStart_burning & chaparrals_BurningNei
+    ruleTWO_chap = chaparralsAllowedStart_burning & (chaparrals_BurningNei_withWind
+                                                     & NorthDirctIsburing)
+
+    chaparrals_startBurning = (ruleTWO_chap | ruleONE_chap)
 
     # ---------------------Simulate the dense forest with wind exist------:
-    denseForest_isburning = (grid == 6)
-    denseForestAllowedStart_burning = (grid == 2) & (grid != 5)
-    denseForest_withSixBurningNei = (neighbourcounts[4] == 6)
-    denseForest_withFiveBurningNei = (neighbourcounts[4] == 5)
-    ruleONE_denseF = denseForestAllowedStart_burning & denseForest_withSixBurningNei
-    ruleTWO_denseF = denseForestAllowedStart_burning & (denseForest_withFiveBurningNei
-                                                        & NorthDirctIsburing)
-    denseForest_startBurning = (ruleONE_denseF | ruleTWO_denseF) & \
-                               ((SE == 2) | (S == 2) | (SW == 2))
 
-    # may be can't
-    grid[denseForest_startBurning | chaparrals_startBurning] = 4
+    denseForest_isburning = (grid == 4)
+    denseForestAllowedStart_burning = (grid == 2) & (grid != 5)
+    # the condition of start burning: 
+    denseForest_BurningNei = (neighbourcounts[4] >= 6)
+    # the condition of start burning that start burning when have a nei is burning in north:
+    denseForest_BurningNei_withWind = (neighbourcounts[4] >= 5 )
+
+    ruleONE_denseF = denseForestAllowedStart_burning & denseForest_BurningNei
+    ruleTWO_denseF = denseForestAllowedStart_burning & (denseForest_BurningNei_withWind
+                                                        & NorthDirctIsburing)
+    denseForest_startBurning = (ruleONE_denseF | ruleTWO_denseF)
+
+    # ---------------------Simulate the scrubland in canyon with wind exist------:
+
+    scrubland_isburning = (grid == 4)
+    scrublandAllowedStart_burning = (grid == 3) & (grid != 5)
+    scrubland_BurningNei_withWind = (neighbourcounts[4] > 1) 
+    scrubland_BurningNei = (neighbourcounts[4] > 2)  
+
+    ruleONE_scru = scrublandAllowedStart_burning & scrubland_BurningNei
+    ruleTWO_scru = scrublandAllowedStart_burning & (scrubland_BurningNei_withWind
+                                                     & NorthDirctIsburing)
+
+    scrubland_startBurning = (ruleTWO_scru | ruleONE_scru)
+
+
+    grid[denseForest_startBurning | chaparrals_startBurning
+         | scrubland_startBurning] = 4
 
 
 
