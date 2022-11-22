@@ -115,15 +115,14 @@ def transition_function(grid, neighbourstates, neighbourcounts):
 
 # the function of firing chaparall simulation:
 
-def generateProbability(grid, northBurning, burningNeighbours):
-    probability_0 = np.where((grid == 0) & (burningNeighbours), 0.4, 0)
-    probability_2 = np.where((grid == 2) & (burningNeighbours), 0.1, 0)
-    probability_3 = np.where((grid == 3) & (burningNeighbours), 0.8, 0)
-    probability_0_NW = np.where(northBurning, probability_0*1.2, probability_0)
-    probability_2_NW = np.where(northBurning, probability_2*1.2, probability_2)
-    probability_3_NW = np.where(northBurning, probability_3*1.2, probability_3)
-    probability_all = probability_0_NW + probability_2_NW + probability_3_NW
-    return probability_all
+def generateProbability(grid, northBurning, burningNeighbourCount):
+    probability_0 = np.where(grid == 0, 0.1*burningNeighbourCount, 0)
+    probability_2 = np.where(grid == 2, 0.02*burningNeighbourCount, 0)
+    probability_3 = np.where(grid == 3, 0.4*burningNeighbourCount, 0)
+    probability_all = probability_0 + probability_2 + probability_3
+    probability_all_NW = np.where(northBurning, probability_all*1.2, probability_all)
+
+    return probability_all_NW
 
 def updateBurn(grid, neighbourstates, neighbourcounts):
 
@@ -133,12 +132,8 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
     # array of pixels with a northern pixel that is burning
     northBurning = (N == 4) | (NW == 4) | (NE == 4)
 
-    # array of all possible burning arrays
-    burnableCells = (grid == 0) | (grid == 2) | (grid == 3)
-    burningNeighbours = (neighbourcounts[4] > 2)
-
     randomNumber = np.random.rand(200, 200)
-    toBurn = generateProbability(grid, northBurning, burningNeighbours) > randomNumber
+    toBurn = generateProbability(grid, northBurning, neighbourcounts[4]) > randomNumber
 
     burning = (grid == 4)
 
