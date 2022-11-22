@@ -64,7 +64,7 @@ def setup(args):
 
     #setting forest
     gridray[25: 75, 60: 100] = 2
-    gridray[80:140, 0:100] = 2
+    gridray[80:140, 0: 100] = 2
 
     # create the part of scrubland in canyon
     gridray[20:140, 120:140] = 3
@@ -130,21 +130,29 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
     randomNumber = np.random.rand(200, 200)
     toBurn = generateProbability(grid, northBurning, neighbourcounts[6]) > randomNumber
 
-    burning = (grid == 6) | (grid == 4) | (grid == 7)
+    burning = (grid == 6) | (grid == 4) | (grid == 7) | (grid == 5)
 
     itemindex = np.where(burning == True)
     timeTrack[itemindex] += 1
-    toOrange = ((timeTrack == 30) & (gridray == 2)) | ((timeTrack == 1) & (gridray == 3)) | (
-                (timeTrack == 10) & (gridray == 0)) | ((timeTrack == 10) & (gridray == 6))
-    toRed = ((timeTrack == 70) & (gridray == 2)) | ((timeTrack == 3) & (gridray == 3)) | (
-                (timeTrack == 20) & (gridray == 0)) | ((timeTrack == 20) & (gridray == 6))
+    toOrange = ((timeTrack == random.randint(20,40)) & (gridray == 2)) | ((timeTrack == random.randint(1,3)) & (gridray == 3)) | (
+                (timeTrack == random.randint(5,15)) & (gridray == 0)) | ((timeTrack == random.randint(5,15)) & (gridray == 6))
+    toRed = ((timeTrack >= random.randint(50,70)) & (gridray == 2)) | ((timeTrack >= random.randint(4,6)) & (gridray == 3)) | (
+                (timeTrack >= 20) & (gridray == 0)) | ((timeTrack >= random.randint(16,30)) & (gridray == 6))
     stopBurn = ((timeTrack >= 150) & (gridray == 2)) | ((timeTrack >= 8) & (gridray == 3)) | (
                 (timeTrack >= 40) & (gridray == 0)) | ((timeTrack >= 40) & (gridray == 6))
+    restoreScrub = ((timeTrack >= 240) & (gridray == 3))
+    restoreChap = ((timeTrack >= 350) & (gridray == 0))
+    restoreForest = ((timeTrack >= 650) & (gridray == 2))
+    
+
 
     grid[toBurn] = 6
     grid[toOrange] = 7
     grid[toRed] = 4 
     grid[stopBurn] = 5
+    grid[restoreScrub] = 3
+    grid[restoreChap] = 0
+    grid[restoreForest] = 2
 
 
 def main():
