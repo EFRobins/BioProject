@@ -34,15 +34,17 @@ def setup(args):
     # State 3: scrubland in canyon
     # State 4: state of burning/keep burning/birth/survival/color of fire
     # State 5: state of death / stop burning
+    # State 6: yellowy orange 1st stage burning
+    # Stage 7: orange 
 
-    config.states = (0, 1, 2, 3, 4, 5, 6)
+    config.states = (0, 1, 2, 3, 4, 5, 6, 7)
     config.wrap = False
     # -------------------------------------------------------------------------
 
     # ---- Override the defaults below (these may be changed at anytime) ----
 
     config.state_colors = [(0.7, 0.7, 0.2), (0.4, 0.8, 1), (0.3, 0.4, 0),
-                           (0.9, 1, 0), (0.7, 0, 0.1), (0.4, 0.4, 0.4), (1, 0.6, 0)]
+                           (0.9, 1, 0), (0.7, 0, 0.1), (0.4, 0.4, 0.4), (1, 0.9, 0.2 ), (1, 0.6, 0.1) ]
 
     config.num_generations = 1000
     # countNum = 0
@@ -54,6 +56,12 @@ def setup(args):
     # the GUI calls this to pass the user defined config
     # into the main system with an extra argument
     # do not change
+
+    # create the caparral:
+    # for y in range(0, 200):
+    #     for x in range(0, 200):
+    #         gridray[y][x] = 0
+
     #setting forest
     gridray[25: 75, 60: 100] = 2
     gridray[80:140, 0:100] = 2
@@ -65,8 +73,16 @@ def setup(args):
     gridray[70:80, 20:100] = 1
 
     # initial the condition: start firing on power plant here:
-    gridray[0:3, 0:10] = 6
-    gridray[0:3, 194:200] = 6
+
+
+    for y in range(0, 1):
+        for x in range(194, 200):
+            gridray[y][x] = 6
+
+    for i in range(0, 50):
+        x = random.randint(0, 10)
+        y = random.randint(0, 10)
+        gridray[y][x] = 6
 
     config.set_initial_grid(gridray)
 
@@ -114,16 +130,19 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
     randomNumber = np.random.rand(200, 200)
     toBurn = generateProbability(grid, northBurning, neighbourcounts[6]) > randomNumber
 
-    burning = (grid == 6) | (grid == 4)
+    burning = (grid == 6) | (grid == 4) | (grid == 7)
 
     itemindex = np.where(burning == True)
     timeTrack[itemindex] += 1
+    toOrange = ((timeTrack == 30) & (gridray == 2)) | ((timeTrack == 1) & (gridray == 3)) | (
+                (timeTrack == 10) & (gridray == 0)) | ((timeTrack == 10) & (gridray == 6))
     toRed = ((timeTrack == 70) & (gridray == 2)) | ((timeTrack == 3) & (gridray == 3)) | (
                 (timeTrack == 20) & (gridray == 0)) | ((timeTrack == 20) & (gridray == 6))
     stopBurn = ((timeTrack >= 150) & (gridray == 2)) | ((timeTrack >= 8) & (gridray == 3)) | (
                 (timeTrack >= 40) & (gridray == 0)) | ((timeTrack >= 40) & (gridray == 6))
 
     grid[toBurn] = 6
+    grid[toOrange] = 7
     grid[toRed] = 4 
     grid[stopBurn] = 5
 
