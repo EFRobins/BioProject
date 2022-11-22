@@ -54,40 +54,19 @@ def setup(args):
     # the GUI calls this to pass the user defined config
     # into the main system with an extra argument
     # do not change
-
-    # create the caparral:
-    # for y in range(0, 200):
-    #     for x in range(0, 200):
-    #         gridray[y][x] = 0
-
-    # create the part of dense forest:
-    for y in range(25, 75):
-        for x in range(60, 100):
-            gridray[y][x] = 2
-
-    for y in range(80, 140):
-        for x in range(0, 100):
-            gridray[y][x] = 2
+    #setting forest
+    gridray[25: 75, 60: 100] = 2
+    gridray[80:140, 0:100] = 2
 
     # create the part of scrubland in canyon
-    for y in range(20, 140):
-        for x in range(120, 140):
-            gridray[y][x] = 3
+    gridray[20:140, 120:140] = 3
 
     # create the part of lake :
-    for y in range(70, 80):
-        for x in range(20, 100):
-            gridray[y][x] = 1
+    gridray[70:80, 20:100] = 1
 
     # initial the condition: start firing on power plant here:
-
-    for y in range(0, 3):
-        for x in range(0, 10):
-            gridray[y][x] = 6
-
-    for y in range(0, 1):
-        for x in range(194, 200):
-            gridray[y][x] = 6
+    gridray[0:3, 0:10] = 6
+    gridray[0:3, 194:200] = 6
 
     config.set_initial_grid(gridray)
 
