@@ -58,8 +58,6 @@ def setup(args):
     # the GUI calls this to pass the user defined config
     # into the main system with an extra argument
     # do not change
-    # 先覆盖，再更改？：
-
     # create the caparral:
     # for y in range(0, 200):
     #     for x in range(0, 200):
@@ -127,17 +125,18 @@ def transition_function(grid, neighbourstates, neighbourcounts):
 def relativeTime_simu(grid, neighbourstates, neighbourcounts):
     # ----------------------Simulate the chaparral with wind exist------:
 
-    # unpack the state arrays
+    # unpack the state arrays as diff directions:
     NW, N, NE, W, E, SW, S, SE = neighbourstates
-    
+    # anything which is burning:
+    isburning = (grid == 4)
+
     # get the cells that have a north burning neig:
     NorthDirctIsburing = (N == 4)
-    chaparrals_isburning = (grid == 4)
     chaparralsAllowedStart_burning = (grid == 0) & (grid != 5)
     # the condition of start burning that start burning when have a nei is burning in north:
-    chaparrals_BurningNei_withWind = (neighbourcounts[4] > 1) 
-    # the condition of start burning: 
-    chaparrals_BurningNei = (neighbourcounts[4] > 2)  
+    chaparrals_BurningNei_withWind = (neighbourcounts[4] > 1)
+    # the condition of start burning:
+    chaparrals_BurningNei = (neighbourcounts[4] > 2)
 
     ruleONE_chap = chaparralsAllowedStart_burning & chaparrals_BurningNei
     ruleTWO_chap = chaparralsAllowedStart_burning & (chaparrals_BurningNei_withWind
@@ -147,12 +146,11 @@ def relativeTime_simu(grid, neighbourstates, neighbourcounts):
 
     # ---------------------Simulate the dense forest with wind exist------:
 
-    denseForest_isburning = (grid == 4)
     denseForestAllowedStart_burning = (grid == 2) & (grid != 5)
-    # the condition of start burning: 
-    denseForest_BurningNei = (neighbourcounts[4] >= 6)
+    # the condition of start burning:
+    denseForest_BurningNei = (neighbourcounts[4] >= 5)
     # the condition of start burning that start burning when have a nei is burning in north:
-    denseForest_BurningNei_withWind = (neighbourcounts[4] >= 5 )
+    denseForest_BurningNei_withWind = (neighbourcounts[4] >= 4 )
 
     ruleONE_denseF = denseForestAllowedStart_burning & denseForest_BurningNei
     ruleTWO_denseF = denseForestAllowedStart_burning & (denseForest_BurningNei_withWind
@@ -161,10 +159,9 @@ def relativeTime_simu(grid, neighbourstates, neighbourcounts):
 
     # ---------------------Simulate the scrubland in canyon with wind exist------:
 
-    scrubland_isburning = (grid == 4)
     scrublandAllowedStart_burning = (grid == 3) & (grid != 5)
-    scrubland_BurningNei_withWind = (neighbourcounts[4] > 1) 
-    scrubland_BurningNei = (neighbourcounts[4] > 2)  
+    scrubland_BurningNei_withWind = (neighbourcounts[4] > 1)
+    scrubland_BurningNei = (neighbourcounts[4] > 2)
 
     ruleONE_scru = scrublandAllowedStart_burning & scrubland_BurningNei
     ruleTWO_scru = scrublandAllowedStart_burning & (scrubland_BurningNei_withWind
@@ -172,9 +169,19 @@ def relativeTime_simu(grid, neighbourstates, neighbourcounts):
 
     scrubland_startBurning = (ruleTWO_scru | ruleONE_scru)
 
+    itemindex = np.where(isburning == True)
+    timeTrack[itemindex] += 1
+    # geneNum is the whole timeline from the setup function:
+    # "(timeTrack >= geneNum/5) " is the time that chaparrals can be burning.
+    # "((timeTrack >= (geneNum/5)/24)" is the time that grassland in canyon can be burning.
+    # "(timeTrack >= (geneNum*2)/5)" is the time that dense forest can be burning.
 
+    stopBurn = (((timeTrack >= geneNum/5) & (gridray == 0)) |
+                ((timeTrack >= (geneNum/5)/24) & (gridray == 3)) |
+                ((timeTrack >= (geneNum*2)/5) & (gridray == 2)))
     grid[denseForest_startBurning | chaparrals_startBurning
          | scrubland_startBurning] = 4
+    grid[stopBurn] = 5
 
 
 
