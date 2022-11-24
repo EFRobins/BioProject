@@ -37,14 +37,14 @@ def setup(args):
     # State 6: yellowy orange 1st stage burning
     # Stage 7: orange 
 
-    config.states = (0, 1, 2, 3, 4, 5, 6, 7)
+    config.states = (0, 1, 2, 3, 4, 5, 6, 7, 8)
     config.wrap = False
     # -------------------------------------------------------------------------
 
     # ---- Override the defaults below (these may be changed at anytime) ----
 
     config.state_colors = [(0.7, 0.7, 0.2), (0.4, 0.8, 1), (0.3, 0.4, 0),
-                           (0.9, 1, 0), (0.7, 0, 0.1), (0.4, 0.4, 0.4), (1, 0.9, 0.2 ), (1, 0.6, 0.1) ]
+                           (0.9, 1, 0), (0.7, 0, 0.1), (0.4, 0.4, 0.4), (1, 0.9, 0.2 ), (1, 0.6, 0.1), (0, 0, 0)]
 
     config.num_generations = 1000
     # countNum = 0
@@ -72,6 +72,9 @@ def setup(args):
     # create the part of lake :
     gridray[70:80, 20:100] = 1
 
+    # create the part of town :
+    gridray[175:185, 75:85] = 8
+
     # initial the condition: start firing on power plant here:
 
 
@@ -94,7 +97,8 @@ def setup(args):
 
 
 timeTrack = np.zeros((200, 200))
-
+t = 0
+run_once = 0
 
 def transition_function(grid, neighbourstates, neighbourcounts):
     """Function to apply the transition rules
@@ -154,6 +158,16 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
     grid[restoreChap] = 0
     grid[restoreForest] = 2
 
+    global t
+    t += 1
+    if (run_once == 0) & ((grid == 8) & (neighbourcounts[6] >= 1)).any():
+        printTime(t)
+
+
+def printTime(t):
+    print("The fire reached the town at: ", str(t))
+    global run_once
+    run_once += 1
 
 def main():
     """ Main function that sets up, runs and saves CA"""
