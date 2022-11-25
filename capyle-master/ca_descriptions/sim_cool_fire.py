@@ -46,7 +46,9 @@ def setup(args):
     config.state_colors = [(0.7, 0.7, 0.2), (0.4, 0.8, 1), (0.3, 0.4, 0),
                            (0.9, 1, 0), (0.7, 0, 0.1), (0.4, 0.4, 0.4), (1, 0.9, 0.2 ), (1, 0.6, 0.1), (0, 0, 0)]
 
+    global geneNum
     config.num_generations = 1000
+    geneNum = config.num_generations
     # countNum = 0
     config.grid_dims = (200, 200)
     global gridray
@@ -78,9 +80,10 @@ def setup(args):
     # initial the condition: start firing on power plant here:
 
 
-    for y in range(0, 1):
-        for x in range(194, 200):
-            gridray[y][x] = 6
+    for i in range(0, 50):
+        x = random.randint(189, 199)
+        y = random.randint(0, 10)
+        gridray[y][x] = 6
 
     for i in range(0, 50):
         x = random.randint(0, 10)
@@ -138,12 +141,44 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
 
     itemindex = np.where(burning == True)
     timeTrack[itemindex] += 1
+#TODO : here is hongyu's time line with proportion:
+    
+#     # A whole timeline = 60days , 30days for firing simulation
+#     # / another 30 days for reburn simulation
+
+#     # timeTrack for chaparral:
+#     # Assume chaparral can be burning for 3 days to 6 days
+
+#     rangeStart_chap = int(0.05 * geneNum)
+#     rangeEnd_chap = int(0.1 * geneNum)
+#     burningTime_chap = random.randint(rangeStart_chap, rangeEnd_chap)
+
+#     # timeTrack for scrubland:
+#     # Assume scrubland can be burning for 3 hours to 6 hours
+
+#     rangeStart_scru = int((0.05 * geneNum) / 24)
+#     rangeEnd_scru = int((0.1 * geneNum) / 24)
+#     burningTime_scru = random.randint(rangeStart_scru, rangeEnd_scru)
+
+#     # timeTrack for dence forest:
+#     # Assume dense forest can be burning for 20 days to 30 days
+
+#     rangeStart_forest = int(geneNum / 3)
+#     rangeEnd_forest = int(0.5 * geneNum)
+#     burningTime_forest = random.randint(rangeStart_forest, rangeEnd_forest)
+
     toOrange = ((timeTrack == random.randint(20,40)) & (gridray == 2)) | ((timeTrack == random.randint(1,3)) & (gridray == 3)) | (
                 (timeTrack == random.randint(5,15)) & (gridray == 0)) | ((timeTrack == random.randint(5,15)) & (gridray == 6))
     toRed = ((timeTrack >= random.randint(50,70)) & (gridray == 2)) | ((timeTrack >= random.randint(4,6)) & (gridray == 3)) | (
                 (timeTrack >= 20) & (gridray == 0)) | ((timeTrack >= random.randint(16,30)) & (gridray == 6))
     stopBurn = ((timeTrack >= 150) & (gridray == 2)) | ((timeTrack >= 8) & (gridray == 3)) | (
                 (timeTrack >= 40) & (gridray == 0)) | ((timeTrack >= 40) & (gridray == 6))
+    
+#TODO : here is hongyu's time line with proportion:
+#     stopBurn = ((timeTrack >= burningTime_forest) & (gridray == 2)) | (
+#                 (timeTrack >= burningTime_scru) & (gridray == 3)) | \
+#                ((timeTrack >= burningTime_chap) & (gridray == 0)) | ((timeTrack >= burningTime_chap) & (gridray == 6))
+
     restoreScrub = ((timeTrack >= 240) & (gridray == 3))
     restoreChap = ((timeTrack >= 350) & (gridray == 0))
     restoreForest = ((timeTrack >= 650) & (gridray == 2))
