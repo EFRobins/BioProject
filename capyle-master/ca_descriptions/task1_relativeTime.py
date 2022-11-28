@@ -35,7 +35,7 @@ def setup(args):
     # State 4: state of burning/keep burning/birth/survival/color of fire
     # State 5: state of death / stop burning
     # State 6: yellowy orange 1st stage burning
-    # Stage 7: orange 
+    # Stage 7: orange
 
     config.states = (0, 1, 2, 3, 4, 5, 6, 7, 8)
     config.wrap = False
@@ -44,7 +44,7 @@ def setup(args):
     # ---- Override the defaults below (these may be changed at anytime) ----
 
     config.state_colors = [(0.7, 0.7, 0.2), (0.4, 0.8, 1), (0.3, 0.4, 0),
-                           (0.9, 1, 0), (0.7, 0, 0.1), (0.4, 0.4, 0.4), (1, 0.9, 0.2 ), (1, 0.6, 0.1), (0, 0, 0)]
+                           (0.9, 1, 0), (0.7, 0, 0.1), (0.4, 0.4, 0.4), (1, 0.9, 0.2), (1, 0.6, 0.1), (0, 0, 0)]
 
     global geneNum
     config.num_generations = 1000
@@ -64,7 +64,7 @@ def setup(args):
     #     for x in range(0, 200):
     #         gridray[y][x] = 0
 
-    #setting forest
+    # setting forest
     gridray[25: 75, 60: 100] = 2
     gridray[80:140, 0: 100] = 2
 
@@ -78,7 +78,6 @@ def setup(args):
     gridray[175:185, 75:85] = 8
 
     # initial the condition: start firing on power plant here:
-
 
     for i in range(0, 50):
         x = random.randint(189, 199)
@@ -103,6 +102,7 @@ timeTrack = np.zeros((200, 200))
 t = 0
 run_once = 0
 
+
 def transition_function(grid, neighbourstates, neighbourcounts):
     """Function to apply the transition rules
     and return the new grid"""
@@ -118,21 +118,21 @@ def transition_function(grid, neighbourstates, neighbourcounts):
 # the function of firing chaparall simulation:
 
 def generateProbability(grid, northBurning, burningNeighbourCount):
-    probability_0 = np.where(grid == 0, 0.1*burningNeighbourCount, 0)
-    probability_2 = np.where(grid == 2, 0.02*burningNeighbourCount, 0)
-    probability_3 = np.where(grid == 3, 0.4*burningNeighbourCount, 0)
+    probability_0 = np.where(grid == 0, 0.1 * burningNeighbourCount, 0)
+    probability_2 = np.where(grid == 2, 0.02 * burningNeighbourCount, 0)
+    probability_3 = np.where(grid == 3, 0.4 * burningNeighbourCount, 0)
     probability_all = probability_0 + probability_2 + probability_3
-    probability_all_NW = np.where(northBurning, probability_all*1.2, probability_all)
+    probability_all_NW = np.where(northBurning, probability_all * 10.0, probability_all)
 
     return probability_all_NW
 
-def updateBurn(grid, neighbourstates, neighbourcounts):
 
+def updateBurn(grid, neighbourstates, neighbourcounts):
     # unpack the state arrays
     NW, N, NE, W, E, SW, S, SE = neighbourstates
 
     # array of pixels with a northern pixel that is burning
-    northBurning = (N == 6) | (NW == 6) | (NE == 6)
+    northBurning = (N == 6)
 
     randomNumber = np.random.rand(200, 200)
     toBurn = generateProbability(grid, northBurning, neighbourcounts[6]) > randomNumber
@@ -141,53 +141,54 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
 
     itemindex = np.where(burning == True)
     timeTrack[itemindex] += 1
-#TODO : here is hongyu's time line with proportion:
-    
-#     # A whole timeline = 60days , 30days for firing simulation
-#     # / another 30 days for reburn simulation
+    # TODO : here is hongyu's time line with proportion:
 
-#     # timeTrack for chaparral:
-#     # Assume chaparral can be burning for 3 days to 6 days
+    #     # A whole timeline = 60days , 30days for firing simulation
+    #     # / another 30 days for reburn simulation
 
-#     rangeStart_chap = int(0.05 * geneNum)
-#     rangeEnd_chap = int(0.1 * geneNum)
-#     burningTime_chap = random.randint(rangeStart_chap, rangeEnd_chap)
+    #     # timeTrack for chaparral:
+    #     # Assume chaparral can be burning for 3 days to 6 days
 
-#     # timeTrack for scrubland:
-#     # Assume scrubland can be burning for 3 hours to 6 hours
+    #     rangeStart_chap = int(0.05 * geneNum)
+    #     rangeEnd_chap = int(0.1 * geneNum)
+    #     burningTime_chap = random.randint(rangeStart_chap, rangeEnd_chap)
 
-#     rangeStart_scru = int((0.05 * geneNum) / 24)
-#     rangeEnd_scru = int((0.1 * geneNum) / 24)
-#     burningTime_scru = random.randint(rangeStart_scru, rangeEnd_scru)
+    #     # timeTrack for scrubland:
+    #     # Assume scrubland can be burning for 3 hours to 6 hours
 
-#     # timeTrack for dence forest:
-#     # Assume dense forest can be burning for 20 days to 30 days
+    #     rangeStart_scru = int((0.05 * geneNum) / 24)
+    #     rangeEnd_scru = int((0.1 * geneNum) / 24)
+    #     burningTime_scru = random.randint(rangeStart_scru, rangeEnd_scru)
 
-#     rangeStart_forest = int(geneNum / 3)
-#     rangeEnd_forest = int(0.5 * geneNum)
-#     burningTime_forest = random.randint(rangeStart_forest, rangeEnd_forest)
+    #     # timeTrack for dence forest:
+    #     # Assume dense forest can be burning for 20 days to 30 days
 
-    toOrange = ((timeTrack == random.randint(20,40)) & (gridray == 2)) | ((timeTrack == random.randint(1,3)) & (gridray == 3)) | (
-                (timeTrack == random.randint(5,15)) & (gridray == 0)) | ((timeTrack == random.randint(5,15)) & (gridray == 6))
-    toRed = ((timeTrack >= random.randint(50,70)) & (gridray == 2)) | ((timeTrack >= random.randint(4,6)) & (gridray == 3)) | (
-                (timeTrack >= 20) & (gridray == 0)) | ((timeTrack >= random.randint(16,30)) & (gridray == 6))
+    #     rangeStart_forest = int(geneNum / 3)
+    #     rangeEnd_forest = int(0.5 * geneNum)
+    #     burningTime_forest = random.randint(rangeStart_forest, rangeEnd_forest)
+
+    toOrange = ((timeTrack == random.randint(20, 40)) & (gridray == 2)) | (
+                (timeTrack == random.randint(1, 3)) & (gridray == 3)) | (
+                       (timeTrack == random.randint(5, 15)) & (gridray == 0)) | (
+                           (timeTrack == random.randint(5, 15)) & (gridray == 6))
+    toRed = ((timeTrack >= random.randint(50, 70)) & (gridray == 2)) | (
+                (timeTrack >= random.randint(4, 6)) & (gridray == 3)) | (
+                    (timeTrack >= 20) & (gridray == 0)) | ((timeTrack >= random.randint(16, 30)) & (gridray == 6))
     stopBurn = ((timeTrack >= 150) & (gridray == 2)) | ((timeTrack >= 8) & (gridray == 3)) | (
-                (timeTrack >= 40) & (gridray == 0)) | ((timeTrack >= 40) & (gridray == 6))
-    
-#TODO : here is hongyu's time line with proportion:
-#     stopBurn = ((timeTrack >= burningTime_forest) & (gridray == 2)) | (
-#                 (timeTrack >= burningTime_scru) & (gridray == 3)) | \
-#                ((timeTrack >= burningTime_chap) & (gridray == 0)) | ((timeTrack >= burningTime_chap) & (gridray == 6))
+            (timeTrack >= 40) & (gridray == 0)) | ((timeTrack >= 40) & (gridray == 6))
+
+    # TODO : here is hongyu's time line with proportion:
+    #     stopBurn = ((timeTrack >= burningTime_forest) & (gridray == 2)) | (
+    #                 (timeTrack >= burningTime_scru) & (gridray == 3)) | \
+    #                ((timeTrack >= burningTime_chap) & (gridray == 0)) | ((timeTrack >= burningTime_chap) & (gridray == 6))
 
     restoreScrub = ((timeTrack >= 240) & (gridray == 3))
     restoreChap = ((timeTrack >= 350) & (gridray == 0))
     restoreForest = ((timeTrack >= 650) & (gridray == 2))
-    
-
 
     grid[toBurn] = 6
     grid[toOrange] = 7
-    grid[toRed] = 4 
+    grid[toRed] = 4
     grid[stopBurn] = 5
     grid[restoreScrub] = 3
     grid[restoreChap] = 0
@@ -203,6 +204,7 @@ def printTime(t):
     print("The fire reached the town at: ", str(t))
     global run_once
     run_once += 1
+
 
 def main():
     """ Main function that sets up, runs and saves CA"""
