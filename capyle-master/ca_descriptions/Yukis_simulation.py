@@ -109,8 +109,6 @@ def transition_function(grid, neighbourstates, neighbourcounts):
     and return the new grid"""
     # YOUR CODE HERE
 
-    burning = (grid == 4)
-
     updateBurn(grid, neighbourstates, neighbourcounts)
 
     return grid
