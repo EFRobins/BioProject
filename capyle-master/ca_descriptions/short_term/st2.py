@@ -120,7 +120,7 @@ def transition_function(grid, neighbourstates, neighbourcounts):
 # the function of firing chaparall simulation:
 
 def generateProbability(grid, neighbourstates, burningNeighbourCount):
-    probability_0 = np.where(grid == 0, 0.083 * burningNeighbourCount, 0)
+    probability_0 = np.where(grid == 0, 0.07 * burningNeighbourCount, 0)
     probability_2 = np.where(grid == 2, 0.0175 * burningNeighbourCount, 0)
     probability_3 = np.where(grid == 3, 0.6 * burningNeighbourCount, 0)
     probability_all = probability_0 + probability_2 + probability_3

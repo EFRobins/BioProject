@@ -113,8 +113,8 @@ def transition_function(grid, neighbourstates, neighbourcounts):
 # the function of firing chaparall simulation:
 
 def generateProbability(grid, neighbourstates, burningNeighbourCount):
-    probability_0 = np.where(grid == 0, 0.083 * burningNeighbourCount, 0)
-    probability_2 = np.where(grid == 2, 0.0175 * burningNeighbourCount, 0)
+    probability_0 = np.where(grid == 0, 0.07 * burningNeighbourCount, 0)
+    probability_2 = np.where(grid == 2, 0.02 * burningNeighbourCount, 0)
     probability_3 = np.where(grid == 3, 0.6 * burningNeighbourCount, 0)
     probability_all = probability_0 + probability_2 + probability_3
 
@@ -130,8 +130,7 @@ def generateProbability(grid, neighbourstates, burningNeighbourCount):
     southeastBurning = (SE == 6)
 
     # array of pixels with a northern pixel that is burning
-
-     if windDirection == "north":
+    if windDirection == "north":
         probability_all_W = np.where(northBurning, probability_all * 2.5, probability_all)
         probability_all_W = np.where(southBurning, probability_all_W * 0.5, probability_all_W)
 
@@ -162,7 +161,6 @@ def generateProbability(grid, neighbourstates, burningNeighbourCount):
     elif windDirection == "southeast":
         probability_all_W = np.where(southeastBurning, probability_all * 2.5, probability_all)
         probability_all_W = np.where(northwestBurning, probability_all_W * 0.5, probability_all_W)
-
     else:
         probability_all_W = probability_all
 
@@ -180,15 +178,15 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
     itemindex = np.where(burning == True)
     timeTrack[itemindex] += 1
 
-    toOrange = ((timeTrack == random.randint(75,85)) & (gridray == 2)) | (
-                (timeTrack == random.randint(1, 2)) & (gridray == 3)) | (
-                       (timeTrack == random.randint(20, 30)) & (gridray == 0)) | (
-                           (timeTrack == random.randint(20, 30)) & (gridray == 6))
-    toRed = ((timeTrack >= random.randint(250, 256)) & (gridray == 2)) | (
-                (timeTrack >= random.randint(2,3 )) & (gridray == 3)) | (
-                    (timeTrack >= 60) & (gridray == 0)) | ((timeTrack >= random.randint(59,60)) & (gridray == 6))
-    stopBurn = ((timeTrack >= 720) & (gridray == 2)) | ((timeTrack >= 4) & (gridray == 3)) | (
-            (timeTrack >= 166) & (gridray == 0)) | ((timeTrack >= 166) & (gridray == 6))
+    toOrange = ((timeTrack == random.randint(20, 40)) & (gridray == 2)) | (
+                (timeTrack == random.randint(1, 3)) & (gridray == 3)) | (
+                       (timeTrack == random.randint(5, 15)) & (gridray == 0)) | (
+                           (timeTrack == random.randint(5, 15)) & (gridray == 6))
+    toRed = ((timeTrack >= random.randint(50, 70)) & (gridray == 2)) | (
+                (timeTrack >= random.randint(4, 6)) & (gridray == 3)) | (
+                    (timeTrack >= 20) & (gridray == 0)) | ((timeTrack >= random.randint(16, 30)) & (gridray == 6))
+    stopBurn = ((timeTrack >= 150) & (gridray == 2)) | ((timeTrack >= 8) & (gridray == 3)) | (
+            (timeTrack >= 40) & (gridray == 0)) | ((timeTrack >= 40) & (gridray == 6))
 
     grid[toBurn] = 6
     grid[toOrange] = 7
