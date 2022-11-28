@@ -135,15 +135,15 @@ def generateProbability(grid, neighbourstates, burningNeighbourCount):
         probability_all_W = np.where(northBurning, probability_all * 10.0, probability_all)
         probability_all_W = np.where(southBurning, probability_all_W * 0.1, probability_all_W)
 
-    if windDirection == "south":
+    elif windDirection == "south":
         probability_all_W = np.where(southBurning, probability_all * 10.0, probability_all)
         probability_all_W = np.where(northBurning, probability_all_W * 0.1, probability_all_W)
 
-    if windDirection == "east":
+    elif windDirection == "east":
         probability_all_W = np.where(eastBurning, probability_all * 10.0, probability_all)
         probability_all_W = np.where(westBurning, probability_all_W * 0.1, probability_all_W)
 
-    if windDirection == "west":
+    elif windDirection == "west":
         probability_all_W = np.where(westBurning, probability_all * 10.0, probability_all)
         probability_all_W = np.where(eastBurning, probability_all_W * 0.1, probability_all_W)
 
