@@ -101,7 +101,7 @@ def setup(args):
 timeTrack = np.zeros((200, 200))
 t = 0
 run_once = 0
-windDirection = "east"
+windDirection = "northwest"
 
 
 def transition_function(grid, neighbourstates, neighbourcounts):
@@ -128,24 +128,47 @@ def generateProbability(grid, neighbourstates, burningNeighbourCount):
     southBurning = (S == 6)
     eastBurning = (E == 6)
     westBurning = (W == 6)
+    northwestBurning = (NW == 6)
+    northeastBurning = (NE == 6)
+    southwestBurning = (SW == 6)
+    southeastBurning = (SE == 6)
 
     # array of pixels with a northern pixel that is burning
 
     if windDirection == "north":
-        probability_all_W = np.where(northBurning, probability_all * 10.0, probability_all)
-        probability_all_W = np.where(southBurning, probability_all_W * 0.1, probability_all_W)
+        probability_all_W = np.where(northBurning, probability_all * 5.0, probability_all)
+        probability_all_W = np.where(southBurning, probability_all_W * 0.2, probability_all_W)
 
     elif windDirection == "south":
-        probability_all_W = np.where(southBurning, probability_all * 10.0, probability_all)
-        probability_all_W = np.where(northBurning, probability_all_W * 0.1, probability_all_W)
+        probability_all_W = np.where(southBurning, probability_all * 5.0, probability_all)
+        probability_all_W = np.where(northBurning, probability_all_W * 0.2, probability_all_W)
 
     elif windDirection == "east":
-        probability_all_W = np.where(eastBurning, probability_all * 10.0, probability_all)
-        probability_all_W = np.where(westBurning, probability_all_W * 0.1, probability_all_W)
+        probability_all_W = np.where(eastBurning, probability_all * 5.0, probability_all)
+        probability_all_W = np.where(westBurning, probability_all_W * 0.2, probability_all_W)
 
     elif windDirection == "west":
-        probability_all_W = np.where(westBurning, probability_all * 10.0, probability_all)
-        probability_all_W = np.where(eastBurning, probability_all_W * 0.1, probability_all_W)
+        probability_all_W = np.where(westBurning, probability_all * 5.0, probability_all)
+        probability_all_W = np.where(eastBurning, probability_all_W * 0.2, probability_all_W)
+
+    elif windDirection == "northwest":
+        probability_all_W = np.where(northwestBurning, probability_all * 5.0, probability_all)
+        probability_all_W = np.where(southeastBurning, probability_all_W * 0.2, probability_all_W)
+
+    elif windDirection == "northeast":
+        probability_all_W = np.where(northwestBurning, probability_all * 5.0, probability_all)
+        probability_all_W = np.where(southeastBurning, probability_all_W * 0.2, probability_all_W)
+
+    elif windDirection == "southwest":
+        probability_all_W = np.where(northwestBurning, probability_all * 5.0, probability_all)
+        probability_all_W = np.where(southeastBurning, probability_all_W * 0.2, probability_all_W)
+
+    elif windDirection == "southeast":
+        probability_all_W = np.where(northwestBurning, probability_all * 5.0, probability_all)
+        probability_all_W = np.where(southeastBurning, probability_all_W * 0.2, probability_all_W)
+
+    else:
+        probability_all_W = probability_all
 
     return probability_all_W
 
