@@ -69,7 +69,7 @@ def setup(args):
     gridray[80:140, 0: 100] = 2
 
     # create the part of scrubland in canyon
-    gridray[20:140, 120:140] = 3
+    gridray[20:140, 120:130] = 3
 
     # create the part of lake :
     gridray[70:80, 20:100] = 1
@@ -103,7 +103,7 @@ def setup(args):
 timeTrack = np.zeros((200, 200))
 t = 0
 run_once = 0
-windDirection = "northwest"
+windDirection = "north"
 
 
 def transition_function(grid, neighbourstates, neighbourcounts):
@@ -119,7 +119,7 @@ def transition_function(grid, neighbourstates, neighbourcounts):
 # the function of firing chaparall simulation:
 
 def generateProbability(grid, neighbourstates, burningNeighbourCount):
-    probability_0 = np.where(grid == 0, 0.083 * burningNeighbourCount, 0)
+    probability_0 = np.where(grid == 0, 0.07 * burningNeighbourCount, 0)
     probability_2 = np.where(grid == 2, 0.0175 * burningNeighbourCount, 0)
     probability_3 = np.where(grid == 3, 0.6 * burningNeighbourCount, 0)
     probability_all = probability_0 + probability_2 + probability_3
@@ -138,8 +138,8 @@ def generateProbability(grid, neighbourstates, burningNeighbourCount):
     # array of pixels with a northern pixel that is burning
 
     if windDirection == "north":
-        probability_all_W = np.where(northBurning, probability_all * 5.0, probability_all)
-        probability_all_W = np.where(southBurning, probability_all_W * 0.2, probability_all_W)
+        probability_all_W = np.where(northBurning, probability_all * 2.5, probability_all)
+        probability_all_W = np.where(southBurning, probability_all_W * 0.5, probability_all_W)
 
     elif windDirection == "south":
         probability_all_W = np.where(southBurning, probability_all * 5.0, probability_all)
