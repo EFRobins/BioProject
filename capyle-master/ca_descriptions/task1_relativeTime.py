@@ -100,6 +100,8 @@ def setup(args):
 timeTrack = np.zeros((200, 200))
 t = 0
 run_once = 0
+
+# change the wind direction.
 windDirection = "north"
 
 
@@ -134,7 +136,7 @@ def generateProbability(grid, neighbourstates, burningNeighbourCount):
     southwestBurning = (SW == 6)
     southeastBurning = (SE == 6)
 
-    # Change the wind direction, but this file default is "north".
+    # check the wind direction, but this file default is "north".
 
     if windDirection == "north":
         probability_all_W = np.where(northBurning, probability_all * 2.5, probability_all)
