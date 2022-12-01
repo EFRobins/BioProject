@@ -35,7 +35,9 @@ def setup(args):
     # State 4: state of burning/keep burning/birth/survival/color of fire
     # State 5: state of death / stop burning
     # State 6: yellowy orange 1st stage burning
-    # Stage 7: orange
+    # State 7: orange
+    # State 8: town
+    # State 8: fire-resistant trees
 
     config.states = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
     config.wrap = False
@@ -141,7 +143,7 @@ def generateProbability(grid, neighbourstates, burningNeighbourCount):
     southeastBurning = (SE == 6)
 
     # array of pixels with a northern pixel that is burning
-
+    # add wind effect
     if windDirection == "north":
         probability_all_W = np.where(northBurning, probability_all * 2.5, probability_all)
         probability_all_W = np.where(southBurning, probability_all_W * 0.5, probability_all_W)
