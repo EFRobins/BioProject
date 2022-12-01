@@ -37,6 +37,7 @@ def setup(args):
     # State 6: yellowy orange 1st stage burning
     # Stage 7: orange
 
+    
     config.states = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
     config.wrap = False
     # -------------------------------------------------------------------------
