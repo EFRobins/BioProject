@@ -25,7 +25,7 @@ def setup(args):
     config_path = args[0]
     config = utils.load(config_path)
     # -- THE CA MUST BE RELOADED IN THE GUI IF ANY OF THE BELOW ARE CHANGED --
-    config.title = "Task4_LongtermIntervention"
+    config.title = "Task1_RelativeTime"
     config.dimensions = 2
 
     # State 0: chaparral
