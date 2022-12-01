@@ -61,11 +61,6 @@ def setup(args):
     # into the main system with an extra argument
     # do not change
 
-    # create the caparral:
-    # for y in range(0, 200):
-    #     for x in range(0, 200):
-    #         gridray[y][x] = 0
-
     # setting forest
     gridray[25: 75, 60: 100] = 2
     gridray[80:140, 0: 100] = 2
@@ -122,9 +117,9 @@ def transition_function(grid, neighbourstates, neighbourcounts):
     return grid
 
 
-# the function of firing chaparall simulation:
-
+# the function of genarating the probabilities for plants to ignite
 def generateProbability(grid, neighbourstates, burningNeighbourCount):
+    # setting probability coefficient for each type of plants
     probability_0 = np.where(grid == 0, 0.07 * burningNeighbourCount, 0)
     probability_2 = np.where(grid == 2, 0.0175 * burningNeighbourCount, 0)
     probability_3 = np.where(grid == 3, 0.6 * burningNeighbourCount, 0)
@@ -133,6 +128,8 @@ def generateProbability(grid, neighbourstates, burningNeighbourCount):
 
     # unpack the state arrays
     NW, N, NE, W, E, SW, S, SE = neighbourstates
+    
+    # setting burning neighbours in each direction
     northBurning = (N == 6)
     southBurning = (S == 6)
     eastBurning = (E == 6)
@@ -142,8 +139,7 @@ def generateProbability(grid, neighbourstates, burningNeighbourCount):
     southwestBurning = (SW == 6)
     southeastBurning = (SE == 6)
 
-    # array of pixels with a northern pixel that is burning
-    # add wind effect
+    # adding wind effect
     if windDirection == "north":
         probability_all_W = np.where(northBurning, probability_all * 2.5, probability_all)
         probability_all_W = np.where(southBurning, probability_all_W * 0.5, probability_all_W)
@@ -183,40 +179,15 @@ def generateProbability(grid, neighbourstates, burningNeighbourCount):
 
 
 def updateBurn(grid, neighbourstates, neighbourcounts):
-
-
+    # firing plants according to the probabilities
     randomNumber = np.random.rand(200, 200)
     toBurn = generateProbability(grid, neighbourstates, neighbourcounts[6]) > randomNumber
-
+    
+    # updating the burning state
     burning = (grid == 6) | (grid == 4) | (grid == 7) | (grid == 5)
 
     itemindex = np.where(burning == True)
     timeTrack[itemindex] += 1
-    # TODO : here is hongyu's time line with proportion:
-
-    #     # A whole timeline = 60days , 30days for firing simulation
-    #     # / another 30 days for reburn simulation
-
-    #     # timeTrack for chaparral:
-    #     # Assume chaparral can be burning for 3 days to 6 days
-
-    #     rangeStart_chap = int(0.05 * geneNum)
-    #     rangeEnd_chap = int(0.1 * geneNum)
-    #     burningTime_chap = random.randint(rangeStart_chap, rangeEnd_chap)
-
-    #     # timeTrack for scrubland:
-    #     # Assume scrubland can be burning for 3 hours to 6 hours
-
-    #     rangeStart_scru = int((0.05 * geneNum) / 24)
-    #     rangeEnd_scru = int((0.1 * geneNum) / 24)
-    #     burningTime_scru = random.randint(rangeStart_scru, rangeEnd_scru)
-
-    #     # timeTrack for dence forest:
-    #     # Assume dense forest can be burning for 20 days to 30 days
-
-    #     rangeStart_forest = int(geneNum / 3)
-    #     rangeEnd_forest = int(0.5 * geneNum)
-    #     burningTime_forest = random.randint(rangeStart_forest, rangeEnd_forest)
 
     toOrange = ((timeTrack == random.randint(75,85)) & (gridray == 2)) | (
                 (timeTrack == random.randint(1, 2)) & (gridray == 3)) | (
@@ -236,12 +207,11 @@ def updateBurn(grid, neighbourstates, neighbourcounts):
     grid[toRed] = 4
     grid[stopBurn] = 5
 
-
+    # outputing the timestep, when the fire reachs the town
     global t
     t += 1
     if (run_once == 0) & ((grid == 8) & (neighbourcounts[6] >= 1)).any():
         printTime(t)
-
 
 def printTime(t):
     print("The fire reached the town at: ", str(t))
