@@ -142,6 +142,7 @@ def generateProbability(grid, neighbourstates, burningNeighbourCount):
     southeastBurning = (SE == 6)
 
     # adding wind effect
+    # change wind power here
     if windDirection == "north":
         probability_all_W = np.where(northBurning, probability_all * 2.5, probability_all)
         probability_all_W = np.where(southBurning, probability_all_W * 0.5, probability_all_W)
