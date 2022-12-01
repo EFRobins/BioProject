@@ -104,6 +104,8 @@ def setup(args):
 timeTrack = np.zeros((200, 200))
 t = 0
 run_once = 0
+
+# change wind direction here
 windDirection = "north"
 
 
